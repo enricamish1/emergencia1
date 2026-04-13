@@ -3,6 +3,7 @@
 "short_name": "Emergència mèdica",
 "id": "/emergencia/",
 "start_url": "/emergencia/",
+"scope": "/emergencia/",
 "display": "standalone",
 "description": "Guia per a l'atenció mèdica emergent",
 "lang": "ca",
