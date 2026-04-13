@@ -1,5 +1,5 @@
 const CACHE_NAME = 'emergencia-v1';
-const BASE_PATH = '/emergencia/';
+const BASE_PATH = '/emergencia1/';
 const ASSETS_TO_CACHE = [
   BASE_PATH,
   BASE_PATH + 'index.html',
