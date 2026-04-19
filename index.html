@@ -5,11 +5,11 @@
   <meta name="theme-color" content="#2F2F2F">
   <meta name="description" content="Guia per a l'atenció mèdica emergent">
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/png" href="/emergencia/icon-192.png">
-  <link rel="apple-touch-icon" href="/emergencia/icon-192.png">
+  <link rel="icon" type="image/png" href="/emergencia1/icon-192.png">
+  <link rel="apple-touch-icon" href="/emergencia1/icon-192.png">
 <script>
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/emergencia/service-worker.js', { scope: '/emergencia/' })
+    navigator.serviceWorker.register('/emergencia1/service-worker.js', { scope: '/emergencia/' })
       .then(reg => {
         console.log('Service Worker registered successfully:', reg);
         reg.onupdatefound = () => {
@@ -98,13 +98,16 @@ header {
 /* ─── SECTION CONTAINER ─────────────────────────────────────────── */
 #section-container {
   position: absolute;
-  top: 200px;
+  top: 80px;
   left: 0;
-  right: 0;
-  bottom: 120px;
+  right:70px; /* ← reserva espai per la columna dreta */
+  bottom: 100px;
   overflow-y: hidden;
   padding: clamp(12px, 4vw, 20px);
   z-index: 5;
+  overflow-anchor: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 /* ─── SECTION BLOCKS ────────────────────────────────────────────── */
@@ -142,11 +145,12 @@ header {
 /* ─── TIMER / SYNC BUTTONS ──────────────────────────────────────── */
 #timer-sync-buttons {
   position: absolute;
-  top: 250px;
-  right: clamp(8px, 3vw, 20px);
+  top: 80px;
+  right: 4px;
+  width: 60px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
   z-index: 20;
 }
 
@@ -154,10 +158,10 @@ header {
   background: #CC5500;
   color: white;
   border: none;
-  padding: clamp(8px, 2.5vw, 10px) clamp(10px, 3vw, 14px);
+  padding: 6px 4px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: clamp(18px, 5vw, 20px);
+  font-size: clamp(14px, 4vw, 16px);
   /* Minimum tap target */
   min-height: 44px;
   min-width: 44px;
@@ -183,22 +187,20 @@ body.darkmode #timer-sync-buttons button {
   bottom: 130px;
   background: #CC5500;
   color: white;
-  padding: 8px 12px;
+  padding: 8px 4px;
   border-radius: 6px;
   cursor: pointer;
+  text-align: center;
   user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
   pointer-events: auto;
   z-index: 10;
-  /* Minimum tap target */
   min-height: 44px;
   min-width: 44px;
   -webkit-tap-highlight-color: transparent;
 }
 
-#overflow-btn    { right: clamp(8px, 3vw, 20px); }
-#overflow-up-btn { right: clamp(56px, 14vw, 70px); }
+#overflow-btn    { right: clamp(74px, 18vw, 90px); }
+#overflow-up-btn { right: clamp(128px, 32vw, 150px); }
 
 /* ─── CONTROLS ──────────────────────────────────────────────────── */
 .controls {
@@ -746,19 +748,21 @@ body.darkmode #modal-box { background: #222; color: #eee; }
 
 <!-- PANTALLA 2: VISUALITZACIÓ -->
 <div id="screen-viewer" class="screen">
-  <button id="btn-home" class="controls" onclick="goHome()" title="Inici">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 3l9 8h-3v9h-12v-9h-3l9-8z"/>
-    </svg>
-  </button>
-  <!-- Punt 2: Banner indicadors de mode (pantalla viewer) -->
-  <div id="mode-banner-viewer" style="display:none;padding:8px 14px;border-radius:6px;margin-bottom:8px;font-size:14px;line-height:1.5;"></div>
-  <h2 id="viewer-title"></h2>
-  <!-- Punt 4: Indicador de secció/tasques -->
-  <div id="section-indicator" style="display:none;"></div>
 
+  <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+    <button id="btn-home" class="controls" onclick="goHome()" title="Inici">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 3l9 8h-3v9h-12v-9h-3l9-8z"/>
+      </svg>
+    </button>
+    <!-- Punt 2: Banner indicadors de mode (pantalla viewer) -->
+    <div id="mode-banner-viewer" style="display:none; padding:8px 14px; border-radius:6px; font-size:14px; line-height:1.5;flex:1;"></div>
+    <!-- Punt 4: Indicador de secció/tasques -->
+    <div id="section-indicator" style="display:none;margin-left:auto; white-space:nowrap;"></div>
+  </div>
+  <h2 id="viewer-title" style="display:none; margin:0;"></h2>
 
-  <div id="content">
+  <div id="content"style="padding-top:0; margin-top:0;">
     <div id="emergency-timer">
       <span id="timer-display">00:00</span>
     </div>
@@ -799,8 +803,6 @@ body.darkmode #modal-box { background: #222; color: #eee; }
       <path d="M12 3l9 8h-3v9h-12v-9h-3l9-8z"/>
     </svg>
   </button>
-  <h2>Editor d’emergències</h2>
-
   <label>Selecciona emergència</label>
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
     <select id="emergency-select" onchange="loadEmergencyIntoEditor()" style="flex:1;padding:6px;font-size:15px;"></select>
@@ -923,6 +925,9 @@ let taskLastAlert = {};
 function showScreen(id) {
   document.querySelectorAll(".screen").forEach(s => s.style.display = "none");
   document.getElementById(id).style.display = "block";
+  // Amaga el header a les pantalles 2 i 3, el mostra a la inicial
+  const header = document.querySelector("header");
+  header.style.display = (id === "screen-home") ? "block" : "none";
 }
 
 function goHome() {
@@ -933,8 +938,10 @@ function goHome() {
   const btn = document.getElementById("voice-btn");
   if (btn) { btn.textContent = "🎤 Veu OFF"; btn.style.background = "#4B0082"; }
   showScreen("screen-emergencies");
+  document.querySelector("header").style.display = "block";
   renderEmergencyList();
   stopEmergencyTimer();
+  document.activeElement.blur(); 
 }
 
 // LLISTA EMERGÈNCIES
@@ -1038,6 +1045,7 @@ function renderSection() {
       ${sanitize(sec.text).replace(/\n/g, "<br>")}
     </div>
   `;
+  container.scrollTop = 0;
   container.innerHTML = html;
   updateOverflowButton();
   updateSectionIndicator();
@@ -1099,6 +1107,7 @@ function renderChecklist() {
     html = `<div class="section-block"><h3>✔ Totes les tasques completades</h3><p>Prem <strong>Finalitzar</strong> per veure el resum.</p></div>`;
   }
 
+  container.scrollTop = 0;
   container.innerHTML = html;
   updateOverflowButton();
   updateFinishButtonVisibility();
@@ -3150,6 +3159,8 @@ renderEmergencyList();
 showScreen("screen-emergencies");
 // initVoiceControl() ja NO es crida aquí: el permís al micròfon
 // es demanarà quan l'usuari entri a una emergència amb el toggle activat.
+document.querySelector("header").style.display = "block";
+document.activeElement.blur(); 
 </script>
 
 </body>
