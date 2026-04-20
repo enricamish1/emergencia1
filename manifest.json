@@ -16,6 +16,12 @@
       "src": "/emergencia1/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/emergencia1/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "maskable"
     },
     {
