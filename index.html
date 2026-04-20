@@ -671,6 +671,21 @@ body.darkmode #modal-box { background: #222; color: #eee; }
 }
 
 #btn-home svg { vertical-align: middle; }
+/* ─── mode fosc per als botons del menú hamburguesa───────── */
+body.darkmode #hamburger-menu {
+  background: #222;
+  border-color: #444;
+  color: #eee;
+}
+
+body.darkmode #hamburger-menu button {
+  color: #eee;
+  border-bottom-color: #333;
+}
+
+body.darkmode #hamburger-menu button:hover {
+  background: #333;
+}
 </style>
 </head>
 
@@ -680,7 +695,21 @@ body.darkmode #modal-box { background: #222; color: #eee; }
 
 <!-- PANTALLA 1: LLISTA D'EMERGÈNCIES -->
 <div id="screen-emergencies" class="screen">
-   <div class="switches-row">
+   <div class="switches-row" style="position:relative;">
+
+    <!-- Botó hamburguesa -->
+    <div class="switch-item">
+      <button id="menu-btn" onclick="toggleMenu()" style="background:none;border:none;cursor:pointer;padding:4px 8px;font-size:24px;line-height:1;color:inherit;">☰</button>
+    </div>
+
+    <!-- Menú desplegable -->
+    <div id="hamburger-menu" style="display:none;position:absolute;top:44px;left:0;background:#fff;border:1px solid #ccc;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:100;min-width:200px;">
+      <button onclick="openEditor();toggleMenu()" style="display:block;width:100%;padding:12px 16px;background:none;border:none;text-align:left;font-size:16px;cursor:pointer;border-bottom:1px solid #eee;">✏️ Modificar</button>
+      <button onclick="exportEmergencies();toggleMenu()" style="display:block;width:100%;padding:12px 16px;background:none;border:none;text-align:left;font-size:16px;cursor:pointer;border-bottom:1px solid #eee;">📤 Exportar</button>
+      <button onclick="document.getElementById('import-file').click();toggleMenu()" style="display:block;width:100%;padding:12px 16px;background:none;border:none;text-align:left;font-size:16px;cursor:pointer;border-bottom:1px solid #eee;">📥 Importar</button>
+      <button onclick="showAboutApp();toggleMenu()" style="display:block;width:100%;padding:12px 16px;background:none;border:none;text-align:left;font-size:16px;cursor:pointer;border-bottom:1px solid #eee;">ℹ️ Sobre l'aplicació</button>
+      <button onclick="showAboutUs();toggleMenu()" style="display:block;width:100%;padding:12px 16px;background:none;border:none;text-align:left;font-size:16px;cursor:pointer;">👤 Sobre nosaltres</button>
+    </div>
 
     <!-- Mode fosc -->
     <div class="switch-item">
@@ -710,6 +739,8 @@ body.darkmode #modal-box { background: #222; color: #eee; }
     </div>
 
   </div>
+
+  <input type="file" id="import-file" accept="application/json" style="display:none" onchange="importEmergencies(event)">
 
   <div style="margin-top:15px;margin-bottom:10px;user-select:none;-webkit-user-select:none;">
     <strong>Filtre:</strong>
@@ -942,6 +973,37 @@ function goHome() {
   renderEmergencyList();
   stopEmergencyTimer();
   document.activeElement.blur(); 
+}
+
+//Menú hamburger
+function toggleMenu() {
+  const menu = document.getElementById("hamburger-menu");
+  menu.style.display = menu.style.display === "none" ? "block" : "none";
+}
+
+// Tanca el menú si es clica fora
+document.addEventListener("click", function(e) {
+  const menu = document.getElementById("hamburger-menu");
+  const btn = document.getElementById("menu-btn");
+  if (menu && !menu.contains(e.target) && e.target !== btn) {
+    menu.style.display = "none";
+  }
+});
+
+function showAboutApp() {
+  mostrarModal(
+    "Sobre l'aplicació",
+    "Aquesta aplicació s'ha dissenyat per al suport i homogeneïtzació de l'atenció de les emergències mèdiques. Cada institució ha de definir les guies o checklists d'actuació o adaptar-ne d'externes. Aquestes guies es poden importar i exportar en arxius JSON.\n\nLa modificació de les mateixes està limitada a certes paraules que constitueixen ordres verbals del mode sense mans ('fet', 'següent', 'endavant', 'endarrere', 'STOP', 'para', 'llegeix'...). L'aplicació avisa si les modificacions que es volen gravar contenen alguna paraula prohibida.\n\nS'aconsella no escriure en majúscules, ja que alguns lectors tendeixen a lletrejar-ne les paraules. També s'aconsella iniciar cada pas de la guia d'actuació (protocol) amb un guionet seguit d'espai ('- '), per tal de facilitar la conversió de protocols a checklists de forma automàtica.\n\nEn cas d'introduir unitats, s'aconsella no usar abreviacions, ja que els lectors del navegador pot no interpretar-ho adequadament i lletrejar-les.\n\nAgraïm que compartiu aquesta eina si la trobeu útil, així com les guies d'actuació que elaboreu.",
+    [{ label: "Tancar", color: "#003366", value: "tancar" }]
+  );
+}
+
+function showAboutUs() {
+  mostrarModal(
+    "Sobre nosaltres",
+    "Aquesta aplicació ha estat creada per el Dr. Enric Sabrià Bach, ginecòleg al Parc Sanitari Sant Joan de Déu de Sant Boi de Llobregat (Barcelona).\n\nPer consultes o propostes de millora, no dubteu a escriure a enric.sabria@sjd.es",
+    [{ label: "Tancar", color: "#003366", value: "tancar" }]
+  );
 }
 
 // LLISTA EMERGÈNCIES
